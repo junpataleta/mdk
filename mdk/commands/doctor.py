@@ -315,7 +315,11 @@ class DoctorCommand(Command):
         result = repo.execute(['show', 'main:version.php'])
         if result[0] != 0:
             print('  Could not read the main version.php')
-            return
+            print('  ... Try to fall back to the master branch')
+            result = repo.execute(['show', 'master:version.php'])
+            if result[0] != 0:
+                print('  ... Could not read the master version.php')
+                return
 
         reBranch = re.compile(r'^\s*\$branch\s*=\s*(?P<brackets>[\'"])?([0-9]+)(?P=brackets)\s*;')
         latestBranch = None
