@@ -99,6 +99,13 @@ class DoctorCommand(Command):
             }
         ),
         (
+            ['--mastertomain'],
+            {
+                'action': 'store_true',
+                'help': 'Check for existing master instances that can be switched to the main branch'
+            }
+        ),
+        (
             ['--remotes'],
             {
                 'action': 'store_true',
@@ -163,6 +170,10 @@ class DoctorCommand(Command):
         # Check the main branch
         if args.masterbranch or args.mainbranch or allChecks:
             self.mainbranch(args)
+
+        # Check for existing master instances that can be switched to the main branch
+        if args.mastertomain or allChecks:
+            self.mastertomain(args)
 
         # Check what you see is what you get
         if args.hi:
@@ -336,6 +347,39 @@ class DoctorCommand(Command):
                 print('    Setting mainBranch to %d' % (latestBranch))
                 self.C.set('mainBranch', latestBranch)
 
+    def mastertomain(self, args):
+        """Check for instances using the master branch that can be switched to use the main branch"""
+
+        print('Checking usage of the master branch in the instances')
+
+        if not self._checkWorkplace():
+            return
+
+        instances = self.Wp.list(integration=True, stable=True)
+
+        for identifier in instances:
+            M = self.Wp.get(identifier)
+            stablebranch = M.get('stablebranch')
+
+            if stablebranch != 'main':
+                # We're only interested in development instances.
+                continue
+            elif M.git().hasBranch('master'):
+                print('  %s is using the master branch instead of main' % identifier)
+                if args.fix:
+                    currentbranch = M.currentBranch()
+                    print('    Checking out %s' % stablebranch)
+                    if not M.git().checkout(stablebranch):
+                        print('      Error: Checkout for the main branch was unsuccessful!')
+
+                    # Delete the master branch.
+                    if not M.git().execute('branch -D master'):
+                        print('      Error: Cannot delete the master branch!')
+
+                    # Checkout back to the working branch, if necessary.
+                    if currentbranch != 'master':
+                        if not M.git().checkout(currentbranch):
+                            print('      Error: Checkout for the working branch %s was unsuccessful!' % currentbranch)
 
     def hi(self, args):
         """I wonder what is the purpose of this...
