@@ -129,8 +129,8 @@ class Moodle(object):
         b = self.get('branch')
         if b == None:
             raise Exception('Error while reading the branch')
-        elif b == 'master':
-            b = C.get('masterBranch')
+        elif b in ['master', 'main']:
+            b = C.get('mainBranch')
         b = int(b)
         if compare == '>=':
             return b >= branch
@@ -517,12 +517,12 @@ class Moodle(object):
             except:
                 self.version['branch'] = self.version['release'].replace('.', '')[0:2]
                 branch = self.version['branch']
-            if int(branch) >= int(C.get('masterBranch')):
-                self.version['branch'] = 'master'
+            if int(branch) >= int(C.get('mainBranch')):
+                self.version['branch'] = 'main'
 
             # Stable branch
-            if self.version['branch'] == 'master':
-                self.version['stablebranch'] = 'master'
+            if self.version['branch'] in ['master', 'main']:
+                self.version['stablebranch'] = 'main'
             else:
                 self.version['stablebranch'] = 'MOODLE_%s_STABLE' % self.version['branch']
 

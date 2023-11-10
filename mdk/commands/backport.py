@@ -93,7 +93,7 @@ class BackportCommand(Command):
             (
                 ['-v', '--versions'],
                 {
-                    'choices': [str(x) for x in range(13, int(self.C.get('masterBranch')))] + ['master'],
+                    'choices': [str(x) for x in range(13, int(self.C.get('mainBranch')))] + ['main'],
                     'help': 'versions to backport to',
                     'metavar': 'version',
                     'nargs': '+',
@@ -203,7 +203,7 @@ class BackportCommand(Command):
                 logging.info('Hard reset %s to %s' % (newbranch, track))
                 M2.git().reset(to=track, hard=True)
 
-            # Picking the diff upstream/MOODLE_23_STABLE..github/MDL-12345-master
+            # Picking the diff upstream/MOODLE_23_STABLE..github/MDL-12345-main
             logging.info('Cherry-picking %s' % (cherry))
             result = M2.git().pick(hashes)
             if result[0] != 0:

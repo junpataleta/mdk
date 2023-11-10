@@ -114,7 +114,7 @@ class Workplace(object):
                 logging.info('Have a break, this operation is slow...')
                 process('%s clone --mirror %s %s' % (C.get('git'), C.get('remotes.integration'), cacheIntegration))
 
-    def create(self, name=None, version='master', integration=False, useCacheAsRemote=False):
+    def create(self, name=None, version='main', integration=False, useCacheAsRemote=False):
         """Creates a new instance of Moodle.
         The parameter useCacheAsRemote has been deprecated.
         """
@@ -243,8 +243,8 @@ class Workplace(object):
             name = identifier.replace(' ', '_')
         else:
             # Wording version
-            if version == 'master':
-                prefixVersion = C.get('wording.prefixMaster')
+            if version in ['master', 'main']:
+                prefixVersion = C.get('wording.prefixMain')
             else:
                 prefixVersion = version
 

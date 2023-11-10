@@ -222,8 +222,8 @@ class PluginCommand(Command):
             return False
 
         branch = M.get('branch')
-        if branch == 'master':
-            branch = C.get('masterBranch')
+        if branch in ['master', 'main']:
+            branch = C.get('mainBranch')
         branch = int(branch)
 
         fi = po.getZip(branch, fileCache=not args.nocache)

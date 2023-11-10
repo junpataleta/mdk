@@ -219,8 +219,8 @@ def natural_sort_key(s, _nsre=re.compile('([0-9]+)')):
 
 
 def stableBranch(version):
-    if version == 'master':
-        return 'master'
+    if version in ['master', 'main']:
+        return 'main'
     return 'MOODLE_%d_STABLE' % int(version)
 
 

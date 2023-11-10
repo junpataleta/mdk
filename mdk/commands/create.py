@@ -95,8 +95,8 @@ class CreateCommand(Command):
             (
                 ['-v', '--version'],
                 {
-                    'choices': [str(x) for x in range(13, int(self.C.get('masterBranch')))] + ['master'],
-                    'default': ['master'],
+                    'choices': [str(x) for x in range(13, int(self.C.get('mainBranch')))] + ['main'],
+                    'default': ['main'],
                     'help': 'version of Moodle',
                     'metavar': 'version',
                     'nargs': '*'
@@ -149,8 +149,8 @@ class CreateCommand(Command):
 
         # Wording version
         versionNice = version
-        if version == 'master':
-            versionNice = self.C.get('wording.master')
+        if version in ['master', 'main']:
+            versionNice = self.C.get('wording.main')
 
         # Generating names
         if args.integration:

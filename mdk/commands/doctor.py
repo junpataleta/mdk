@@ -85,10 +85,17 @@ class DoctorCommand(Command):
             }
         ),
         (
+            ['--mainbranch'],
+            {
+                'action': 'store_true',
+                'help': 'Check the status of the main branch'
+            }
+        ),
+        (
             ['--masterbranch'],
             {
                 'action': 'store_true',
-                'help': 'Check the status of the master branch'
+                'help': 'Alias to --mainbranch'
             }
         ),
         (
@@ -153,9 +160,9 @@ class DoctorCommand(Command):
         if args.branch or allChecks:
             self.branch(args)
 
-        # Check the master branch
-        if args.masterbranch or allChecks:
-            self.masterbranch(args)
+        # Check the main branch
+        if args.masterbranch or args.mainbranch or allChecks:
+            self.mainbranch(args)
 
         # Check what you see is what you get
         if args.hi:
@@ -286,10 +293,10 @@ class DoctorCommand(Command):
                     print('    Creating %s' % d)
                     mkdir(d, 0o777)
 
-    def masterbranch(self, args):
-        """Checks the current master branch and the value set in config."""
+    def mainbranch(self, args):
+        """Checks the current main branch and the value set in config."""
 
-        print('Checking master branch')
+        print('Checking main branch')
 
         if not self._checkWorkplace():
             return
@@ -305,9 +312,9 @@ class DoctorCommand(Command):
             return
 
         repo = git.Git(repoPath, self.C.get('git'))
-        result = repo.execute(['show', 'master:version.php'])
+        result = repo.execute(['show', 'main:version.php'])
         if result[0] != 0:
-            print('  Could not read the master version.php')
+            print('  Could not read the main version.php')
             return
 
         reBranch = re.compile(r'^\s*\$branch\s*=\s*(?P<brackets>[\'"])?([0-9]+)(?P=brackets)\s*;')
@@ -316,14 +323,14 @@ class DoctorCommand(Command):
             if reBranch.search(line):
                 latestBranch = int(reBranch.search(line).group(2))
 
-        masterBranch = int(self.C.get('masterBranch'))
+        mainBranch = int(self.C.get('mainBranch'))
         if not latestBranch:
             print('  Oops, could not identify the mater branch')
-        elif masterBranch != latestBranch:
-            print('  The config masterBranch is set to %d, expecting %d' % (masterBranch, latestBranch))
+        elif mainBranch != latestBranch:
+            print('  The config mainBranch is set to %d, expecting %d' % (mainBranch, latestBranch))
             if args.fix:
-                print('    Setting masterBranch to %d' % (latestBranch))
-                self.C.set('masterBranch', latestBranch)
+                print('    Setting mainBranch to %d' % (latestBranch))
+                self.C.set('mainBranch', latestBranch)
 
 
     def hi(self, args):
