@@ -93,7 +93,7 @@ class BackportCommand(Command):
             (
                 ['-v', '--versions'],
                 {
-                    'choices': [str(x) for x in range(13, int(self.C.get('masterBranch')))] + ['master'],
+                    'choices': [str(x) for x in range(13, int(self.C.get('masterBranch')))] + ['main'],
                     'help': 'versions to backport to',
                     'metavar': 'version',
                     'nargs': '+',

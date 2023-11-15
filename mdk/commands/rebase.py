@@ -52,7 +52,7 @@ class RebaseCommand(Command):
             (
                 ['-v', '--versions'],
                 {
-                    'choices': [str(x) for x in range(13, int(self.C.get('masterBranch')))] + ['master'],
+                    'choices': [str(x) for x in range(13, int(self.C.get('masterBranch')))] + ['main'],
                     'help': 'versions to rebase the issues on. Ignored if names is set.',
                     'metavar': 'version',
                     'nargs': '+'
